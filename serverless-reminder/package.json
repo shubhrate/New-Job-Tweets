@@ -1,0 +1,15 @@
+{
+  "name": "newjobtweets",
+  "description": "Tweeting new job info",
+  "version": "0.1.0",
+  "dependencies": {},
+  "devDependencies": {
+    "serverless-python-requirements": "^4.1.1"
+  },
+  "main": "handler.py",
+  "scripts": {
+    "test": "\"hello!\""
+  },
+  "author": "",
+  "license": "ISC"
+}

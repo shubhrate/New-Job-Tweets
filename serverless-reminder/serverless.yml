@@ -1,0 +1,76 @@
+service: newJobTweets
+custom:
+  jobsTableName: jobsTable
+package:
+  exclude:
+    - node_modules/**
+    - venv/**
+    - __pycache__/**
+provider:
+  name: aws
+  environment:
+    ENV_LOC: PROD 
+    MODE: PROD
+    ACCOUNT_ID: 075904714953
+  runtime: python3.6
+  stage: dev
+  region: us-east-1
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+        - dynamodb:DescribeStream
+        - dynamodb:GetRecords
+        - dynamodb:GetShardIterator
+        - dynamodb:ListStreams
+      Resource: arn:aws:dynamodb:*:*:table/jobsTable
+    - Effect: "Allow"
+      Action:
+        - sqs:*
+      Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - logs:*
+      Resource: "*"
+functions:
+  streamProcessor:
+    handler: streamprocessor.lambda_handler
+    events:
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt:
+              - jobsTable
+              - StreamArn
+resources:
+  Resources:
+    jobsTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        TableName: jobsTable
+        AttributeDefinitions:
+          -
+            AttributeName: job_id
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: job_id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+    jobsQueue:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: "jobsQueue.fifo"
+        FifoQueue: True
+        ContentBasedDeduplication: True
+   
