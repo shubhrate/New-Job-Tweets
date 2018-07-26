@@ -47,6 +47,11 @@ functions:
             Fn::GetAtt:
               - jobsTable
               - StreamArn
+  scheduledTweets:
+    handler: send_tweet.handler
+    events:
+      - schedule:
+          rate: rate(4 hours)
 resources:
   Resources:
     jobsTable:

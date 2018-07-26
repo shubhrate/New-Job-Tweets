@@ -1,7 +1,10 @@
 import json
-import random
-import os
+
 import boto3
+import os
+
+import random
+
 
 print('Loading function')
 
