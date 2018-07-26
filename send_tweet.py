@@ -24,7 +24,8 @@ def send_job_tweet(tweet_text):
 
 def handler(event,context):
     response = sqs.receive_message(
-    QueueUrl = 'https://sqs.us-east-1.amazonaws.com/075904714953/jobsQueue.fifo')
+        QueueUrl='https://sqs.us-east-1.amazonaws.com/075904714953/jobsQueue.fifo'
+    )
     # sqs.get_queue_url(
     #     QueueName='jobsQueue.fifo',
     #     QueueOwnerAWSAccountId=os.environ['ACCOUNT_ID']
