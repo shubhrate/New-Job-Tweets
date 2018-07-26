@@ -2,6 +2,9 @@ service: newJobTweets
 custom:
   jobsTableName: jobsTable
 package:
+  individually: true
+  include:
+    - twython/**
   exclude:
     - node_modules/**
     - venv/**
@@ -37,9 +40,16 @@ provider:
       Action:
         - logs:*
       Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - ssm:*
+      Resource: "*"
 functions:
   streamProcessor:
     handler: streamprocessor.lambda_handler
+    package:
+      include:
+        - streamprocessor.py
     events:
       - stream:
           type: dynamodb
@@ -49,6 +59,10 @@ functions:
               - StreamArn
   scheduledTweets:
     handler: send_tweet.handler
+    package:
+      include:
+        - send_tweet.py
+        - secrets.py
     events:
       - schedule:
           rate: rate(4 hours)
