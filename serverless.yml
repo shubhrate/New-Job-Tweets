@@ -64,8 +64,7 @@ functions:
         - send_tweet.py
         - secrets.py
     events:
-      - schedule:
-          rate: rate(4 hours)
+      - rate: cron(0 12 * * ? *) #Pacific Standard Time
 resources:
   Resources:
     jobsTable:
@@ -87,9 +86,8 @@ resources:
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
     jobsQueue:
-      Type: "AWS::SQS::Queue"
+      Type: 'AWS::SQS::Queue'
       Properties:
-        QueueName: "jobsQueue.fifo"
+        QueueName: 'jobsQueue.fifo'
         FifoQueue: True
         ContentBasedDeduplication: True
-   
