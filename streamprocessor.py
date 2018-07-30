@@ -45,8 +45,8 @@ def lambda_handler(event, context):
             response = sqs.send_message(
                 QueueUrl=sqs.get_queue_url(
                             QueueName='jobsQueue.fifo',
-                            QueueOwnerAWSAccountId=os.environ['ACCOUNT_ID'])
-                            ['QueueUrl'],
+                            QueueOwnerAWSAccountId=os.environ['ACCOUNT_ID']
+                        )['QueueUrl'],
                 MessageBody=message,
                 MessageGroupId='twitter'
             )

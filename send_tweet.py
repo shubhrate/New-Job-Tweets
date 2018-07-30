@@ -30,8 +30,8 @@ def handler(event, context):
     response = sqs.receive_message(
         QueueUrl=sqs.get_queue_url(
                     QueueName='jobsQueue.fifo',
-                    QueueOwnerAWSAccountId=os.environ['ACCOUNT_ID'])
-                    ['QueueUrl'],
+                    QueueOwnerAWSAccountId=os.environ['ACCOUNT_ID']
+                )['QueueUrl'],
         AttributeNames=['SentTimestamp'],
         MaxNumberOfMessages=10
     )
@@ -45,8 +45,8 @@ def handler(event, context):
             sqs.delete_message(
                 QueueUrl=sqs.get_queue_url(
                             QueueName='jobsQueue.fifo',
-                            QueueOwnerAWSAccountId=os.environ['ACCOUNT_ID'])
-                            ['QueueUrl'],
+                            QueueOwnerAWSAccountId=os.environ['ACCOUNT_ID']
+                        )['QueueUrl'],
                 ReceiptHandle=message['ReceiptHandle']
             )
         for tweet in tweets:
