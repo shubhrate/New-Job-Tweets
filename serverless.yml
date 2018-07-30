@@ -64,7 +64,10 @@ functions:
         - send_tweet.py
         - secrets.py
     events:
-      - rate: cron(0 12 * * ? *) #Pacific Standard Time
+      - schedule: 
+          rate: cron(0 12 * * ? *) #Pacific Standard Time
+      - schedule:
+          rate: rate(4 hours)
 resources:
   Resources:
     jobsTable:
