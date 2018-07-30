@@ -33,24 +33,14 @@ def handler(event, context):
                     QueueOwnerAWSAccountId=os.environ['ACCOUNT_ID']
                 )['QueueUrl'],
         AttributeNames=['SentTimestamp'],
-        MaxNumberOfMessages=10
+        MaxNumberOfMessages=3
     )
     print(response)
-    try:
-        tweets = []
+    if response.get('Messages'):
         for message in response['Messages']:
             data = json.loads(message['Body'])
             text = data['Tweet']
-            tweets.append(text)
-            sqs.delete_message(
-                QueueUrl=sqs.get_queue_url(
-                            QueueName='jobsQueue.fifo',
-                            QueueOwnerAWSAccountId=os.environ['ACCOUNT_ID']
-                        )['QueueUrl'],
-                ReceiptHandle=message['ReceiptHandle']
-            )
-        for tweet in tweets:
-            send_job_tweet(tweet)
+            send_job_tweet(text)
             dynamodb.update_item(
                 TableName='jobsTable',
                 Key={
@@ -65,5 +55,10 @@ def handler(event, context):
                     }
                 }
             )
-    except KeyError:
-        print('No new jobs!')
+            sqs.delete_message(
+                QueueUrl=sqs.get_queue_url(
+                            QueueName='jobsQueue.fifo',
+                            QueueOwnerAWSAccountId=os.environ['ACCOUNT_ID']
+                        )['QueueUrl'],
+                ReceiptHandle=message['ReceiptHandle']
+            )
