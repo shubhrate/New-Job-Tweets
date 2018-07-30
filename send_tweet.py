@@ -51,14 +51,19 @@ def handler(event, context):
             )
         for tweet in tweets:
             send_job_tweet(tweet)
-            # dynamodb.update_item(
-            #     TableName='jobsTable',
-            #     Key={
-            #         'job_id': {
-            #             'S': data['Job_ID']
-            #         }
-            #     },
-            #     UpdateExpression='set posted_to_twitter = Yes'
-            # )
+            dynamodb.update_item(
+                TableName='jobsTable',
+                Key={
+                    'job_id': {
+                        'S': data['Job_ID']
+                    }
+                },
+                UpdateExpression="SET posted_to_twitter = :t",
+                ExpressionAttributeValues={
+                    ':t': {
+                        'BOOL': True
+                    }
+                }
+            )
     except KeyError:
         print('No new jobs!')
