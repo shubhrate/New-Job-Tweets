@@ -3,6 +3,9 @@ import json
 import boto3
 import os
 
+import random
+import time
+
 import tweepy
 from secrets import get_secret
 
@@ -62,3 +65,4 @@ def handler(event, context):
                         )['QueueUrl'],
                 ReceiptHandle=message['ReceiptHandle']
             )
+            time.sleep(random.randint(3,8))
